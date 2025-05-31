@@ -1,0 +1,1698 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeX - Learn Python with Approach</title>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <style>
+        /* --- Global Styles & Black Theme --- */
+        :root {
+            --bg-color: #1a1a1a;
+            --text-color: #f0f0f0;
+            --primary-color: #4a90e2;
+            --secondary-color: #50e3c2;
+            --header-bg: #2c2c2c;
+            --content-bg: #252525;
+            --code-bg: #282c34;
+            --code-text: #abb2bf;
+            --border-color: #65805a; /* Darker green, was a bit light */
+            --link-hover-bg: var(--primary-color);
+            --link-hover-text: var(--bg-color);
+            --header-height: 60px; /* Default, will be updated by JS */
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: var(--header-height); /* For sticky header offset */
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+        }
+
+        /* --- Header & Navigation --- */
+        header {
+            background-color: var(--header-bg);
+            padding: 0 2rem; /* Adjusted padding for height control */
+            height: var(--header-height);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--primary-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        header .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        header .logo .python-highlight {
+            color: var(--secondary-color);
+        }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap; 
+        }
+
+        nav ul li {
+            margin-left: 15px;
+            margin-bottom: 5px; 
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            padding: 0.5rem 0.8rem;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        nav ul li a:hover, nav ul li a.active {
+            background-color: var(--link-hover-bg);
+            color: var(--link-hover-text);
+        }
+
+        /* Hamburger Menu */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 30px;
+            height: 25px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 10;
+        }
+
+        .menu-toggle span {
+            width: 30px;
+            height: 3px;
+            background-color: var(--text-color);
+            border-radius: 10px;
+            transition: all 0.3s linear;
+            position: relative;
+            transform-origin: 1px;
+        }
+        .menu-toggle.active span:nth-child(1) {
+            transform: rotate(45deg);
+        }
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+            transform: translateX(20px);
+        }
+        .menu-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg);
+        }
+
+
+        /* --- Main Content Area --- */
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .page-content {
+            display: none; /* Initially hidden */
+            background-color: var(--content-bg);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+            margin-bottom: 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+        }
+
+        .page-content.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        h1, h2, h3, h4 {
+            color: var(--primary-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+            margin-top: 1.5rem;
+        }
+        h1 { font-size: 2.2rem; margin-top: 0; }
+        h2 { font-size: 1.8rem; }
+        h3 { font-size: 1.5rem; color: var(--secondary-color); }
+        h4 { font-size: 1.2rem; color: #b0bec5; border-bottom: none; margin-top: 1.2rem;}
+
+
+        p, ul, ol {
+            margin-bottom: 1.2rem;
+        }
+        ul, ol {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* --- Code Blocks --- */
+        pre {
+            background-color: var(--code-bg);
+            color: var(--code-text);
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Fira Code', 'Courier New', Courier, monospace;
+            font-size: 0.95em;
+            border: 1px solid var(--border-color);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        code {
+            background-color: var(--code-bg);
+            color: var(--secondary-color);
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-family: 'Fira Code', 'Courier New', Courier, monospace;
+        }
+
+        pre code {
+            background-color: transparent;
+            padding: 0;
+            color: inherit;
+            font-size: inherit;
+        }
+
+        .code-keyword { color: #c678dd; font-weight: bold; }
+        .code-string { color: #98c379; }
+        .code-comment { color: #5c6370; font-style: italic; }
+        .code-function { color: #61afef; }
+        .code-number { color: #d19a66; }
+        .code-operator { color: #56b6c2; }
+        .code-builtin { color: #e5c07b; }
+        .code-class { color: #e5c07b; font-weight: bold; }
+        .code-parameter { color: #abb2bf; }
+
+        /* --- Tutorial List on Home Page --- */
+        .tutorial-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .tutorial-list li {
+            margin-bottom: 10px;
+        }
+        .tutorial-list li a {
+            text-decoration: none;
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+            display: block;
+            padding: 12px 15px;
+            background-color: var(--header-bg);
+            border-radius: 5px;
+            transition: background-color 0.2s ease, transform 0.2s ease, color 0.2s ease, border-left-color 0.2s ease;
+            border-left: 4px solid transparent;
+        }
+        .tutorial-list li a:hover {
+            background-color: var(--primary-color);
+            color: var(--bg-color);
+            transform: translateX(8px); /* Slightly more pronounced */
+            border-left-color: var(--secondary-color);
+        }
+
+        /* --- Footer --- */
+        footer {
+            text-align: center;
+            padding: 2rem 1rem; /* Adjusted padding for responsiveness */
+            margin-top: 3rem;
+            background-color: var(--header-bg);
+            color: #aaa;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* --- Utility --- */
+        .button-nav-group {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .button {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: var(--bg-color) !important;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            border: none;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .button:hover {
+            background-color: var(--secondary-color);
+        }
+        /* .button.prev, .button.next handled by flexbox justify-content */
+
+        .note {
+            background-color: #333a4f;
+            border-left: 4px solid var(--primary-color);
+            padding: 10px 15px;
+            margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        .note strong { color: var(--secondary-color); }
+
+
+        /* --- Responsive Styles --- */
+        @media (max-width: 768px) {
+            header {
+                padding: 0 1rem; /* Less padding on smaller screens */
+                flex-wrap: wrap; /* Allow wrapping if needed, though logo and toggle should fit */
+            }
+            .menu-toggle {
+                display: flex;
+            }
+            nav {
+                order: 3; /* Make nav appear below logo and toggle when wrapped */
+                width: 100%;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease-in-out;
+                background-color: var(--header-bg); /* Ensure background for dropdown */
+            }
+            nav.active {
+                max-height: 100vh; /* Adjust to fit content, or use a large enough value */
+                padding-bottom: 10px;
+            }
+            nav ul {
+                flex-direction: column;
+                align-items: flex-start; /* Align items to the left */
+                width: 100%;
+            }
+            nav ul li {
+                margin-left: 0;
+                width: 100%;
+                margin-bottom: 0;
+            }
+            nav ul li a {
+                display: block;
+                width: 100%;
+                padding: 10px 1rem; /* Adjust padding for vertical layout */
+                border-radius: 0;
+                border-bottom: 1px solid var(--border-color); /* Separator for links */
+            }
+            nav ul li:last-child a {
+                border-bottom: none;
+            }
+
+            .container {
+                margin: 1rem auto;
+                padding: 0 1rem;
+            }
+            .page-content {
+                padding: 20px 15px;
+            }
+            h1 { font-size: 1.9rem; }
+            h2 { font-size: 1.6rem; }
+            h3 { font-size: 1.4rem; }
+            
+            .button-nav-group {
+                justify-content: center; /* Center buttons if they don't fill width */
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 1.7rem; }
+            h2 { font-size: 1.4rem; }
+            h3 { font-size: 1.2rem; }
+            pre { font-size: 0.9em; padding: 10px; }
+            code { font-size: 0.9em; }
+
+            .button-nav-group .button {
+                width: 100%;
+                margin: 5px 0; /* Stack them with small vertical margin */
+                text-align: center;
+            }
+            .button-nav-group .button.prev, .button-nav-group .button.next {
+                 /* flexbox handles this well, width: 100% makes them stack */
+            }
+            footer {
+                padding: 1.5rem 1rem;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Code<span class="python-highlight">X</span></div>
+        <button class="menu-toggle" aria-label="Toggle navigation" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <nav>
+            <ul>
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#introduction" class="nav-link">Intro</a></li>
+                <li><a href="#variables" class="nav-link">Variables</a></li>
+                <li><a href="#operators" class="nav-link">Operators</a></li>
+                <li><a href="#controlflow" class="nav-link">Control Flow</a></li>
+                <li><a href="#datastructures" class="nav-link">Data Structures</a></li>
+                <li><a href="#strings" class="nav-link">Strings</a></li>
+                <li><a href="#functions" class="nav-link">Functions</a></li>
+                <li><a href="#exceptions" class="nav-link">Exceptions</a></li>
+                <li><a href="#modules" class="nav-link">Modules</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <!-- Home Page Content -->
+        <div id="home" class="page-content active">
+            <h1>Welcome to CodeX ,<span class="python-highlight"> Buddy</span>!</h1>
+            <p>Your comprehensive journey to mastering Python fundamentals starts here. This website is designed for students and beginners looking to learn Python programming from scratch with detailed explanations and practical examples.</p>
+            <p>Navigate through the topics using the menu above or the list below. Each section builds upon the previous ones, so it's recommended to go in order if you're new to programming.</p>
+            
+            <h2>Available Tutorials:</h2>
+            <ul class="tutorial-list">
+                <li><a href="#introduction" class="nav-link-list">1. Introduction to Python</a></li>
+                <li><a href="#variables" class="nav-link-list">2. Variables and Data Types</a></li>
+                <li><a href="#operators" class="nav-link-list">3. Operators in Python</a></li>
+                <li><a href="#controlflow" class="nav-link-list">4. Control Flow (If, Loops)</a></li>
+                <li><a href="#datastructures" class="nav-link-list">5. Python Data Structures</a></li>
+                <li><a href="#strings" class="nav-link-list">6. String Manipulation</a></li>
+                <li><a href="#functions" class="nav-link-list">7. Functions</a></li>
+                <li><a href="#exceptions" class="nav-link-list">8. Error and Exception Handling</a></li>
+                <li><a href="#modules" class="nav-link-list">9. Modules and Packages (Intro)</a></li>
+            </ul>
+            <p style="margin-top: 20px;">
+                Ready to start? Click on a tutorial to begin your Python adventure!
+            </p>
+        </div>
+
+        <!-- 1. Introduction to Python Page Content -->
+        <div id="introduction" class="page-content">
+            <h1>1. Introduction to Python</h1>
+            <p>Python is a high-level, interpreted programming language renowned for its readability, simplicity, and versatility. Created by Guido van Rossum and first released in 1991, Python's design philosophy emphasizes code readability with its notable use of significant indentation.</p>
+            
+            <h3>Why Learn Python?</h3>
+            <ul>
+                <li><strong>Easy to Learn & Read:</strong> Python's syntax is clean and intuitive, resembling plain English, making it an excellent language for beginners.</li>
+                <li><strong>Versatile & Powerful:</strong> Used in a wide array of applications, including web development, data science, machine learning, artificial intelligence, scientific computing, automation, and more.</li>
+                <li><strong>Large & Active Community:</strong> A vast global community contributes to a rich ecosystem of libraries and frameworks, offering solutions for almost any problem.</li>
+                <li><strong>Extensive Standard Library:</strong> Python comes with a "batteries included" standard library that provides tools for many common tasks.</li>
+                <li><strong>Cross-Platform:</strong> Python code runs искусство (platform-independently) on Windows, macOS, Linux, and other operating systems.</li>
+                <li><strong>High Demand:</strong> Python developers are highly sought after in the job market across various industries.</li>
+            </ul>
+
+            <h3>What can you do with Python?</h3>
+            <ul>
+                <li><strong>Web Development:</strong> Frameworks like Django and Flask.</li>
+                <li><strong>Data Analysis & Visualization:</strong> Libraries like Pandas, NumPy, Matplotlib, Seaborn.</li>
+                <li><strong>Machine Learning & AI:</strong> Libraries like Scikit-learn, TensorFlow, PyTorch.</li>
+                <li><strong>Automation & Scripting:</strong> Automate repetitive tasks on your computer.</li>
+                <li><strong>Game Development:</strong> Libraries like Pygame.</li>
+                <li><strong>Desktop GUIs:</strong> Libraries like Tkinter, PyQt, Kivy.</li>
+                <li>And much more!</li>
+            </ul>
+
+            <h3>Python Versions</h3>
+            <p>There are two major Python versions: Python 2 and Python 3. Python 2 is legacy and no longer supported (official support ended in 2020). <strong>This tutorial focuses on Python 3</strong>, which is the present and future of Python. Ensure you install a recent version of Python 3 (e.g., 3.8 or newer).</p>
+
+            <h3>Your First Python Program: "Hello, World!"</h3>
+            <p>The traditional first program in any language is one that prints "Hello, World!" to the screen. In Python, it's remarkably simple:</p>
+            <pre><code class="code-function">print</code>(<code class="code-string">"Hello, World!"</code>)</pre>
+            <p>To run this:
+                <ol>
+                    <li>Ensure Python 3 is installed.</li>
+                    <li>Open a text editor, type the code, and save it as a file (e.g., `hello.py`).</li>
+                    <li>Open a terminal or command prompt, navigate to the directory where you saved the file, and run: <pre><code>python hello.py</code></pre></li>
+                    <li>Alternatively, you can open the Python interpreter (type `python` or `python3` in your terminal) and type the command directly.</li>
+                </ol>
+            </p>
+
+            <h3>Setting up Your Environment</h3>
+            <p>
+                To start coding in Python, you'll need:
+                <ol>
+                    <li><strong>Install Python:</strong> Download the latest version of Python 3 from <a href="https://www.python.org/downloads/" target="_blank" style="color: var(--secondary-color);">python.org</a>.</li>
+                    <li><strong>Choose a Code Editor or IDE (Integrated Development Environment):</strong>
+                        <ul>
+                            <li><strong>VS Code (Visual Studio Code):</strong> Free, powerful, highly extensible, and very popular. (Recommended)</li>
+                            <li><strong>PyCharm:</strong> Feature-rich IDE specifically for Python. (Community Edition is free)</li>
+                            <li><strong>Sublime Text:</strong> Lightweight and fast text editor with Python support.</li>
+                            <li><strong>IDLE:</strong> A basic IDE that comes with the Python installation, good for very simple scripts or quick tests.</li>
+                        </ul>
+                    </li>
+                </ol>
+            </p>
+            <div class="button-nav-group">
+                <button onclick="navigateTo('#home')" class="button prev">&larr; Home</button>
+                <button onclick="navigateTo('#variables')" class="button next">Next: Variables & Data Types &rarr;</button>
+            </div>
+        </div>
+
+        <!-- 2. Variables and Data Types Page Content -->
+        <div id="variables" class="page-content">
+            <h1>2. Variables and Data Types</h1>
+            <p>Variables are fundamental to programming. They act as named containers or labels for storing data values in memory. Python is dynamically typed, meaning you don't need to explicitly declare a variable's type; Python infers it from the value assigned.</p>
+
+            <h3>Creating Variables</h3>
+            <p>You create a variable by assigning a value to it using the assignment operator (`=`):</p>
+            <pre>
+<code class="code-comment"># Variable_name = value</code>
+age <code class="code-operator">=</code> <code class="code-number">25</code>
+name <code class="code-operator">=</code> <code class="code-string">"Alice"</code>
+height_meters <code class="code-operator">=</code> <code class="code-number">1.75</code>
+is_learning <code class="code-operator">=</code> <code class="code-builtin">True</code>
+            </pre>
+
+            <h4>Variable Naming Rules and Conventions:</h4>
+            <ul>
+                <li>Must start with a letter (a-z, A-Z) or an underscore (`_`).</li>
+                <li>Can be followed by letters, numbers (0-9), or underscores.</li>
+                <li>Are case-sensitive (e.g., `myVar` and `myvar` are different).</li>
+                <li>Cannot be a Python keyword (e.g., `if`, `for`, `class`).</li>
+                <li><strong>Convention (PEP 8):</strong> Use `snake_case` for variable names (all lowercase with underscores separating words), e.g., `user_age`, `total_amount`.</li>
+            </ul>
+
+            <h4>Multiple Assignment:</h4>
+            <p>Python allows you to assign values to multiple variables in a single line:</p>
+            <pre>
+x, y, z <code class="code-operator">=</code> <code class="code-number">10</code>, <code class="code-string">"Python"</code>, <code class="code-number">3.14</code>
+<code class="code-function">print</code>(x)         <code class="code-comment"># Output: 10</code>
+<code class="code-function">print</code>(y)         <code class="code-comment"># Output: Python</code>
+
+a <code class="code-operator">=</code> b <code class="code-operator">=</code> c <code class="code-operator">=</code> <code class="code-string">"Same Value"</code>
+<code class="code-function">print</code>(b)         <code class="code-comment"># Output: Same Value</code>
+            </pre>
+
+            <h3>Core Data Types</h3>
+            <p>Python has several built-in data types. Here are the most common ones:</p>
+            
+            <h4>1. Numeric Types:</h4>
+            <ul>
+                <li><strong>Integer (<code>int</code>):</strong> Whole numbers, positive or negative, without decimals. E.g., <code>10</code>, <code>-3</code>, <code>0</code>, <code>1000000</code>.</li>
+                <li><strong>Float (<code>float</code>):</strong> Numbers with a decimal point or in exponential (E) notation. E.g., <code>3.14</code>, <code>-0.5</code>, <code>2.5e2</code> (which is 2.5 * 10<sup>2</sup> = 250.0).</li>
+                <li><strong>Complex (<code>complex</code>):</strong> Numbers with a real and an imaginary part, written as `x + yj`. E.g., `3+5j`, `2-7j`. (Less common in basic tutorials).</li>
+            </ul>
+            <pre>
+count <code class="code-operator">=</code> <code class="code-number">100</code>       <code class="code-comment"># int</code>
+price <code class="code-operator">=</code> <code class="code-number">19.99</code>     <code class="code-comment"># float</code>
+temperature <code class="code-operator">=</code> <code class="code-number">-5.0</code>  <code class="code-comment"># float</code>
+            </pre>
+
+            <h4>2. Sequence Types:</h4>
+            <ul>
+                <li><strong>String (<code>str</code>):</strong> An ordered sequence of characters, used for text. Enclosed in single (<code>'</code>), double (<code>"</code>), or triple (<code>'''</code> or <code>"""</code> for multi-line) quotes. Strings are immutable (cannot be changed after creation).
+                    <pre>
+message <code class="code-operator">=</code> <code class="code-string">"Hello, Python!"</code>
+char <code class="code-operator">=</code> <code class="code-string">'A'</code>
+multiline_str <code class="code-operator">=</code> <code class="code-string">'''This is a
+multi-line string.'''</code></pre>
+                </li>
+                <li><strong>List (<code>list</code>):</strong> An ordered, mutable (changeable) collection of items. Items can be of different types. Defined using square brackets `[]`. (More detail in Data Structures section)</li>
+                <li><strong>Tuple (<code>tuple</code>):</strong> An ordered, immutable (unchangeable) collection of items. Defined using parentheses `()`. (More detail in Data Structures section)</li>
+            </ul>
+
+            <h4>3. Mapping Type:</h4>
+            <ul>
+                <li><strong>Dictionary (<code>dict</code>):</strong> An unordered (in Python < 3.7, ordered in Python 3.7+) collection of key-value pairs. Mutable. Defined using curly braces `{}`. (More detail in Data Structures section)</li>
+            </ul>
+
+            <h4>4. Set Types:</h4>
+            <ul>
+                <li><strong>Set (<code>set</code>):</strong> An unordered collection of unique items. Mutable. Defined using curly braces `{}` or `set()`. (More detail in Data Structures section)</li>
+                <li><strong>Frozenset (<code>frozenset</code>):</strong> An immutable version of a set.</li>
+            </ul>
+
+            <h4>5. Boolean Type:</h4>
+            <ul>
+                <li><strong>Boolean (<code>bool</code>):</strong> Represents one of two truth values: <code>True</code> or <code>False</code>. Often the result of comparisons.</li>
+            </ul>
+            <pre>
+is_active <code class="code-operator">=</code> <code class="code-builtin">True</code>
+has_permission <code class="code-operator">=</code> <code class="code-builtin">False</code>
+            </pre>
+
+            <h4>6. None Type:</h4>
+            <ul>
+                <li><strong>NoneType (<code>None</code>):</strong> Represents the absence of a value or a null value. A variable that has not been assigned a value yet (or explicitly set to `None`) is of `NoneType`.</li>
+            </ul>
+            <pre>
+user_email <code class="code-operator">=</code> <code class="code-builtin">None</code>
+<code class="code-keyword">if</code> user_email <code class="code-keyword">is</code> <code class="code-builtin">None</code>:
+    <code class="code-function">print</code>(<code class="code-string">"Email not provided."</code>)
+            </pre>
+
+            <h3>Type Checking and Conversion</h3>
+            <p>You can check the type of a variable using the built-in <code>type()</code> function, and convert between compatible types using functions like <code>int()</code>, <code>float()</code>, <code>str()</code>, <code>list()</code>, etc.</p>
+            <pre>
+quantity <code class="code-operator">=</code> <code class="code-string">"10"</code>  <code class="code-comment"># This is a string</code>
+<code class="code-function">print</code>(<code class="code-builtin">type</code>(quantity)) <code class="code-comment"># Output: &lt;class 'str'&gt;</code>
+
+<code class="code-comment"># Convert string to integer</code>
+num_quantity <code class="code-operator">=</code> <code class="code-builtin">int</code>(quantity)
+<code class="code-function">print</code>(<code class="code-builtin">type</code>(num_quantity)) <code class="code-comment"># Output: &lt;class 'int'&gt;</code>
+<code class="code-function">print</code>(num_quantity <code class="code-operator">*</code> <code class="code-number">5</code>) <code class="code-comment"># Output: 50</code>
+
+age <code class="code-operator">=</code> <code class="code-number">30</code>
+age_message <code class="code-operator">=</code> <code class="code-string">"I am "</code> <code class="code-operator">+</code> <code class="code-builtin">str</code>(age) <code class="code-operator">+</code> <code class="code-string">" years old."</code> <code class="code-comment"># Convert int to str for concatenation</code>
+<code class="code-function">print</code>(age_message) <code class="code-comment"># Output: I am 30 years old.</code>
+            </pre>
+            <div class="note">
+                <strong>Dynamic Typing:</strong> Python's dynamic typing is convenient but means you need to be mindful of the types of data your variables hold, especially when performing operations, to avoid `TypeError` exceptions.
+            </div>
+
+            <div class="button-nav-group">
+                <button onclick="navigateTo('#introduction')" class="button prev">&larr; Prev: Introduction</button>
+                <button onclick="navigateTo('#operators')" class="button next">Next: Operators &rarr;</button>
+            </div>
+        </div>
+        
+        <!-- 3. Operators in Python -->
+        <div id="operators" class="page-content">
+            <h1>3. Operators in Python</h1>
+            <p>Operators are special symbols or keywords in Python that perform operations on values and variables (operands). Understanding operators is crucial for performing calculations, making decisions, and manipulating data.</p>
+
+            <h3>1. Arithmetic Operators</h3>
+            <p>Used to perform mathematical calculations.</p>
+            <pre>
+a <code class="code-operator">=</code> <code class="code-number">10</code>
+b <code class="code-operator">=</code> <code class="code-number">3</code>
+
+<code class="code-function">print</code>(<code class="code-string">f"Addition (a + b):         {a <code class="code-operator">+</code> b}"</code>)  <code class="code-comment"># Output: 13</code>
+<code class="code-function">print</code>(<code class="code-string">f"Subtraction (a - b):      {a <code class="code-operator">-</code> b}"</code>)  <code class="code-comment"># Output: 7</code>
+<code class="code-function">print</code>(<code class="code-string">f"Multiplication (a * b):   {a <code class="code-operator">*</code> b}"</code>)  <code class="code-comment"># Output: 30</code>
+<code class="code-function">print</code>(<code class="code-string">f"Division (a / b):         {a <code class="code-operator">/</code> b}"</code>)  <code class="code-comment"># Output: 3.333... (float division)</code>
+<code class="code-function">print</code>(<code class="code-string">f"Floor Division (a // b):  {a <code class="code-operator">//</code> b}"</code>) <code class="code-comment"># Output: 3 (integer division, discards remainder)</code>
+<code class="code-function">print</code>(<code class="code-string">f"Modulus (a % b):          {a <code class="code-operator">%</code> b}"</code>)  <code class="code-comment"># Output: 1 (remainder of division)</code>
+<code class="code-function">print</code>(<code class="code-string">f"Exponentiation (a ** b):  {a <code class="code-operator">**</code> b}"</code>) <code class="code-comment"># Output: 1000 (a to the power of b)</code>
+            </pre>
+
+            <h3>2. Comparison (Relational) Operators</h3>
+            <p>Used to compare two values. They return a Boolean value (<code>True</code> or <code>False</code>).</p>
+            <pre>
+x <code class="code-operator">=</code> <code class="code-number">5</code>
+y <code class="code-operator">=</code> <code class="code-number">10</code>
+
+<code class="code-function">print</code>(<code class="code-string">f"Equal (x == y):           {x <code class="code-operator">==</code> y}"</code>) <code class="code-comment"># Output: False</code>
+<code class="code-function">print</code>(<code class="code-string">f"Not Equal (x != y):       {x <code class="code-operator">!=</code> y}"</code>) <code class="code-comment"># Output: True</code>
+<code class="code-function">print</code>(<code class="code-string">f"Greater Than (x > y):     {x <code class="code-operator">></code> y}"</code>) <code class="code-comment"># Output: False</code>
+<code class="code-function">print</code>(<code class="code-string">f"Less Than (x < y):        {x <code class="code-operator"><</code> y}"</code>) <code class="code-comment"># Output: True</code>
+<code class="code-function">print</code>(<code class="code-string">f"Greater or Equal (x >= y):{x <code class="code-operator">>=</code> y}"</code>) <code class="code-comment"># Output: False</code>
+<code class="code-function">print</code>(<code class="code-string">f"Less or Equal (x <= y):   {x <code class="code-operator"><=</code> y}"</code>) <code class="code-comment"># Output: True (Original comment was: Actually False for 5 <= 10, typo in comment! Corrected: 5 <= 10 is True)</code>
+<code class="code-function">print</code>(<code class="code-string">f"Less or Equal (5 <= 10):  {<code class="code-number">5</code> <code class="code-operator"><=</code> <code class="code-number">10</code>}"</code>) <code class="code-comment"># Output: True (Correct example)</code>
+            </pre>
+
+            <h3>3. Logical Operators</h3>
+            <p>Used to combine conditional statements. They also return <code>True</code> or <code>False</code>.</p>
+            <pre>
+is_sunny <code class="code-operator">=</code> <code class="code-builtin">True</code>
+is_warm <code class="code-operator">=</code> <code class="code-builtin">False</code>
+
+<code class="code-comment"># and: True if both operands are true</code>
+<code class="code-function">print</code>(<code class="code-string">f"is_sunny and is_warm: {is_sunny <code class="code-keyword">and</code> is_warm}"</code>) <code class="code-comment"># Output: False</code>
+
+<code class="code-comment"># or: True if at least one operand is true</code>
+<code class="code-function">print</code>(<code class="code-string">f"is_sunny or is_warm:  {is_sunny <code class="code-keyword">or</code> is_warm}"</code>)  <code class="code-comment"># Output: True</code>
+
+<code class="code-comment"># not: True if operand is false (inverts the boolean value)</code>
+<code class="code-function">print</code>(<code class="code-string">f"not is_warm:          {<code class="code-keyword">not</code> is_warm}"</code>)          <code class="code-comment"># Output: True</code>
+            </pre>
+            <div class="note"><strong>Short-circuiting:</strong> Logical operators <code>and</code> and <code>or</code> use short-circuit evaluation. If the result can be determined from the first operand, the second is not evaluated (e.g., if `A` is `False` in `A and B`, `B` is not checked).</div>
+
+            <h3>4. Assignment Operators</h3>
+            <p>Used to assign values to variables. We've already seen `=`, but there are shorthand versions.</p>
+            <pre>
+counter <code class="code-operator">=</code> <code class="code-number">0</code>
+counter <code class="code-operator">+=</code> <code class="code-number">1</code>      <code class="code-comment"># Equivalent to: counter = counter + 1;  counter is now 1</code>
+<code class="code-function">print</code>(<code class="code-string">f"counter: {counter}"</code>)
+
+total <code class="code-operator">=</code> <code class="code-number">100</code>
+total <code class="code-operator">-=</code> <code class="code-number">10</code>     <code class="code-comment"># Equivalent to: total = total - 10;   total is now 90</code>
+<code class="code-function">print</code>(<code class="code-string">f"total: {total}"</code>)
+
+product <code class="code-operator">=</code> <code class="code-number">5</code>
+product <code class="code-operator">*=</code> <code class="code-number">3</code>    <code class="code-comment"># Equivalent to: product = product * 3; product is now 15</code>
+<code class="code-function">print</code>(<code class="code-string">f"product: {product}"</code>)
+
+<code class="code-comment"># Others include: /=, //=, %=, **=</code>
+            </pre>
+
+            <h3>5. Membership Operators</h3>
+            <p>Used to test if a sequence (like a string, list, or tuple) contains a specific value. Return <code>True</code> or <code>False</code>.</p>
+            <pre>
+my_list <code class="code-operator">=</code> [<code class="code-number">1</code>, <code class="code-number">2</code>, <code class="code-number">3</code>, <code class="code-string">"apple"</code>]
+message <code class="code-operator">=</code> <code class="code-string">"Hello World"</code>
+
+<code class="code-comment"># in: True if value is found in the sequence</code>
+<code class="code-function">print</code>(<code class="code-string">f"3 in my_list:          {<code class="code-number">3</code> <code class="code-keyword">in</code> my_list}"</code>)      <code class="code-comment"># Output: True</code>
+<code class="code-function">print</code>(<code class="code-string">f"'World' in message:    {'<code class="code-string">World</code>' <code class="code-keyword">in</code> message}"</code>)  <code class="code-comment"># Output: True</code>
+
+<code class="code-comment"># not in: True if value is NOT found in the sequence</code>
+<code class="code-function">print</code>(<code class="code-string">f"4 not in my_list:      {<code class="code-number">4</code> <code class="code-keyword">not in</code> my_list}"</code>)  <code class="code-comment"># Output: True</code>
+<code class="code-function">print</code>(<code class="code-string">f"'Python' not in message: {'<code class="code-string">Python</code>' <code class="code-keyword">not in</code> message}"</code>)<code class="code-comment"># Output: True</code>
+            </pre>
+
+            <h3>6. Identity Operators</h3>
+            <p>Used to compare the memory locations of two objects (i.e., if they are the same object, not just if they are equal in value). Return <code>True</code> or <code>False</code>.</p>
+            <pre>
+list_a <code class="code-operator">=</code> [<code class="code-number">1</code>, <code class="code-number">2</code>]
+list_b <code class="code-operator">=</code> [<code class="code-number">1</code>, <code class="code-number">2</code>]
+list_c <code class="code-operator">=</code> list_a
+
+<code class="code-comment"># is: True if both variables point to the same object in memory</code>
+<code class="code-function">print</code>(<code class="code-string">f"list_a is list_b: {list_a <code class="code-keyword">is</code> list_b}"</code>) <code class="code-comment"># Output: False (different objects, though values are same)</code>
+<code class="code-function">print</code>(<code class="code-string">f"list_a is list_c: {list_a <code class="code-keyword">is</code> list_c}"</code>) <code class="code-comment"># Output: True (list_c is an alias for list_a)</code>
+
+<code class="code-comment"># is not: True if both variables point to different objects</code>
+<code class="code-function">print</code>(<code class="code-string">f"list_a is not list_b: {list_a <code class="code-keyword">is not</code> list_b}"</code>) <code class="code-comment"># Output: True</code>
+            </pre>
+            <div class="note">
+                <strong><code>is</code> vs <code>==</code>:</strong> Use <code>==</code> to check if two variables have the same value. Use <code>is</code> to check if they refer to the exact same object instance in memory. For immutable types like small integers and strings, Python might reuse objects, so <code>is</code> can sometimes be <code>True</code> even for independently created variables, but don't rely on this behavior for correctness; use <code>==</code> for value comparison.
+            </div>
+            
+            <h3>Operator Precedence</h3>
+            <p>Python evaluates expressions based on operator precedence (similar to mathematical order of operations). Parentheses <code>()</code> can be used to override the default order.</p>
+            <p>Example: <code>**</code> (exponentiation) has higher precedence than <code>*</code> (multiplication), which is higher than <code>+</code> (addition).</p>
+            <pre>
+result <code class="code-operator">=</code> <code class="code-number">2</code> <code class="code-operator">+</code> <code class="code-number">3</code> <code class="code-operator">*</code> <code class="code-number">4</code>       <code class="code-comment"># 3 * 4 is 12, then 2 + 12 = 14</code>
+<code class="code-function">print</code>(<code class="code-string">f"Result: {result}"</code>)  <code class="code-comment"># Output: 14</code>
+
+result_paren <code class="code-operator">=</code> (<code class="code-number">2</code> <code class="code-operator">+</code> <code class="code-number">3</code>) <code class="code-operator">*</code> <code class="code-number">4</code> <code class="code-comment"># 2 + 3 is 5, then 5 * 4 = 20</code>
+<code class="code-function">print</code>(<code class="code-string">f"Result with parentheses: {result_paren}"</code>) <code class="code-comment"># Output: 20</code>
+            </pre>
+
+            <div class="button-nav-group">
+                <button onclick="navigateTo('#variables')" class="button prev">&larr; Prev: Variables</button>
+                <button onclick="navigateTo('#controlflow')" class="button next">Next: Control Flow &rarr;</button>
+            </div>
+        </div>
+
+        <!-- 4. Control Flow Page Content -->
+        <div id="controlflow" class="page-content">
+            <h1>4. Control Flow</h1>
+            <p>Control flow statements determine the order in which your program's statements are executed. They allow you to make decisions and repeat actions, making your programs dynamic and intelligent.</p>
+
+            <h3>Conditional Statements (<code>if</code>, <code>elif</code>, <code>else</code>)</h3>
+            <p>These statements execute different blocks of code based on whether a condition is true or false.</p>
+            <pre>
+age <code class="code-operator">=</code> <code class="code-number">19</code>
+
+<code class="code-keyword">if</code> age <code class="code-operator">>=</code> <code class="code-number">18</code>:
+    <code class="code-function">print</code>(<code class="code-string">"You are an adult."</code>)
+    <code class="code-keyword">if</code> age <code class="code-operator">>=</code> <code class="code-number">21</code>:
+        <code class="code-function">print</code>(<code class="code-string">"You can also buy alcohol in some regions."</code>) <code class="code-comment"># Nested if</code>
+<code class="code-keyword">elif</code> age <code class="code-operator">>=</code> <code class="code-number">13</code>:
+    <code class="code-function">print</code>(<code class="code-string">"You are a teenager."</code>)
+<code class="code-keyword">else</code>:
+    <code class="code-function">print</code>(<code class="code-string">"You are a child."</code>)
+            </pre>
+            
+            <h4>Ternary Operator (Conditional Expression)</h4>
+            <p>A concise way to write a simple if-else statement in one line.</p>
+            <pre>
+<code class="code-comment"># value_if_true if condition else value_if_false</code>
+score <code class="code-operator">=</code> <code class="code-number">75</code>
+result <code class="code-operator">=</code> <code class="code-string">"Pass"</code> <code class="code-keyword">if</code> score <code class="code-operator">>=</code> <code class="code-number">50</code> <code class="code-keyword">else</code> <code class="code-string">"Fail"</code>
+<code class="code-function">print</code>(result)  <code class="code-comment"># Output: Pass</code>
+            </pre>
+
+            <h3>Loops</h3>
+            <p>Loops are used to execute a block of code repeatedly.</p>
+
+            <h4>1. <code>for</code> Loop</h4>
+            <p>Iterates over a sequence (like a list, tuple, dictionary, set, or string) or other iterable objects.</p>
+            
+            <h5>Iterating over a list:</h5>
+            <pre>
+fruits <code class="code-operator">=</code> [<code class="code-string">"apple"</code>, <code class="code-string">"banana"</code>, <code class="code-string">"cherry"</code>]
+<code class="code-keyword">for</code> fruit <code class="code-keyword">in</code> fruits:
+    <code class="code-function">print</code>(fruit)
+            </pre>
+
+            <h5>Iterating over a string:</h5>
+            <pre>
+<code class="code-keyword">for</code> char <code class="code-keyword">in</code> <code class="code-string">"Python"</code>:
+    <code class="code-function">print</code>(char)
+            </pre>
+
+            <h5>The <code>range()</code> function:</h5>
+            <p>Often used with <code>for</code> loops to iterate a specific number of times.</p>
+            <pre>
+<code class="code-comment"># range(stop) - 0 up to (but not including) stop</code>
+<code class="code-keyword">for</code> i <code class="code-keyword">in</code> <code class="code-builtin">range</code>(<code class="code-number">5</code>):  <code class="code-comment"># 0, 1, 2, 3, 4</code>
+    <code class="code-function">print</code>(i)
+
+<code class="code-comment"># range(start, stop) - start up to (but not including) stop</code>
+<code class="code-keyword">for</code> i <code class="code-keyword">in</code> <code class="code-builtin">range</code>(<code class="code-number">2</code>, <code class="code-number">6</code>): <code class="code-comment"># 2, 3, 4, 5</code>
+    <code class="code-function">print</code>(i)
+
+<code class="code-comment"># range(start, stop, step) - start up to stop, incrementing by step</code>
+<code class="code-keyword">for</code> i <code class="code-keyword">in</code> <code class="code-builtin">range</code>(<code class="code-number">0</code>, <code class="code-number">10</code>, <code class="code-number">2</code>): <code class="code-comment"># 0, 2, 4, 6, 8</code>
+    <code class="code-function">print</code>(i)
+            </pre>
+
+            <h5>The <code>enumerate()</code> function:</h5>
+            <p>Provides both the index and the value during iteration.</p>
+            <pre>
+colors <code class="code-operator">=</code> [<code class="code-string">"red"</code>, <code class="code-string">"green"</code>, <code class="code-string">"blue"</code>]
+<code class="code-keyword">for</code> index, color <code class="code-keyword">in</code> <code class="code-builtin">enumerate</code>(colors):
+    <code class="code-function">print</code>(<code class="code-string">f"Index {index}: {color}"</code>)
+            </pre>
+
+            <h4>2. <code>while</code> Loop</h4>
+            <p>Repeats a block of code as long as a specified condition is true.</p>
+            <pre>
+count <code class="code-operator">=</code> <code class="code-number">0</code>
+<code class="code-keyword">while</code> count <code class="code-operator">&lt;</code> <code class="code-number">5</code>:
+    <code class="code-function">print</code>(<code class="code-string">f"Count is: {count}"</code>)
+    count <code class="code-operator">+=</code> <code class="code-number">1</code> <code class="code-comment"># Important: update the condition variable to avoid infinite loop</code>
+<code class="code-function">print</code>(<code class="code-string">"Loop finished."</code>)
+            </pre>
+            <div class="note"><strong>Infinite Loops:</strong> Be careful with <code>while</code> loops. If the condition never becomes false, the loop will run forever. You can usually stop an infinite loop by pressing `Ctrl+C` in the terminal.</div>
+
+            <h3>Loop Control Statements</h3>
+            <p>These statements change the execution of a loop from its normal sequence.</p>
+            <ul>
+                <li><strong><code>break</code>:</strong> Terminates the current loop and transfers control to the statement immediately following the loop.</li>
+                <li><strong><code>continue</code>:</strong> Skips the rest of the code inside the loop for the current iteration and proceeds to the next iteration.</li>
+                <li><strong><code>pass</code>:</strong> Acts as a placeholder. It does nothing when executed. Useful when a statement is syntactically required but you don't want any code to execute.</li>
+            </ul>
+            <pre>
+<code class="code-function">print</code>(<code class="code-string">"\n--- break example ---"</code>)
+<code class="code-keyword">for</code> i <code class="code-keyword">in</code> <code class="code-builtin">range</code>(<code class="code-number">10</code>):
+    <code class="code-keyword">if</code> i <code class="code-operator">==</code> <code class="code-number">5</code>:
+        <code class="code-keyword">break</code>  <code class="code-comment"># Exit loop when i is 5</code>
+    <code class="code-function">print</code>(i) <code class="code-comment"># Prints 0, 1, 2, 3, 4</code>
+
+<code class="code-function">print</code>(<code class="code-string">"\n--- continue example ---"</code>)
+<code class="code-keyword">for</code> i <code class="code-keyword">in</code> <code class="code-builtin">range</code>(<code class="code-number">5</code>):
+    <code class="code-keyword">if</code> i <code class="code-operator">==</code> <code class="code-number">2</code>:
+        <code class="code-keyword">continue</code> <code class="code-comment"># Skip iteration when i is 2</code>
+    <code class="code-function">print</code>(i) <code class="code-comment"># Prints 0, 1, 3, 4</code>
+
+<code class="code-function">print</code>(<code class="code-string">"\n--- pass example ---"</code>)
+<code class="code-keyword">for</code> i <code class="code-keyword">in</code> <code class="code-builtin">range</code>(<code class="code-number">3</code>):
+    <code class="code-keyword">if</code> i <code class="code-operator">==</code> <code class="code-number">1</code>:
+        <code class="code-keyword">pass</code> <code class="code-comment"># Placeholder, does nothing</code>
+    <code class="code-function">print</code>(i) <code class="code-comment"># Prints 0, 1, 2</code>
+            </pre>
+
+            <h4><code>else</code> Clause in Loops</h4>
+            <p>Python loops (both <code>for</code> and <code>while</code>) can have an optional <code>else</code> clause. The code in the <code>else</code> block is executed if the loop completes normally (i.e., not terminated by a <code>break</code> statement).</p>
+            <pre>
+<code class="code-function">print</code>(<code class="code-string">"\n--- for...else example ---"</code>)
+<code class="code-keyword">for</code> num <code class="code-keyword">in</code> [<code class="code-number">1</code>, <code class="code-number">3</code>, <code class="code-number">5</code>]:
+    <code class="code-function">print</code>(<code class="code-string">f"Checking {num}"</code>)
+    <code class="code-keyword">if</code> num <code class="code-operator">%</code> <code class="code-number">2</code> <code class="code-operator">==</code> <code class="code-number">0</code>:
+        <code class="code-function">print</code>(<code class="code-string">"Even number found!"</code>)
+        <code class="code-keyword">break</code>
+<code class="code-keyword">else</code>: <code class="code-comment"># Executed if loop completes without break</code>
+    <code class="code-function">print</code>(<code class="code-string">"No even numbers found."</code>)
+
+<code class="code-function">print</code>(<code class="code-string">"\n--- while...else example ---"</code>)
+attempts <code class="code-operator">=</code> <code class="code-number">0</code>
+<code class="code-keyword">while</code> attempts <code class="code-operator">&lt;</code> <code class="code-number">3</code>:
+    <code class="code-function">print</code>(<code class="code-string">f"Attempt {attempts + 1}"</code>)
+    <code class="code-comment"># password = input("Enter password: ")</code>
+    <code class="code-comment"># if password == "secret":</code>
+    <code class="code-comment">#     print("Access granted")</code>
+    <code class="code-comment">#     break</code>
+    attempts <code class="code-operator">+=</code> <code class="code-number">1</code>
+<code class="code-keyword">else</code>: <code class="code-comment"># Executed if loop completes without break</code>
+    <code class="code-function">print</code>(<code class="code-string">"Too many failed attempts (simulated)."</code>)
+            </pre>
+
+            <div class="button-nav-group">
+                <button onclick="navigateTo('#operators')" class="button prev">&larr; Prev: Operators</button>
+                <button onclick="navigateTo('#datastructures')" class="button next">Next: Data Structures &rarr;</button>
+            </div>
+        </div>
+        
+        <!-- 5. Python Data Structures -->
+        <div id="datastructures" class="page-content">
+            <h1>5. Python Data Structures</h1>
+            <p>Data structures are ways of organizing and storing data so that it can be accessed and modified efficiently. Python provides several powerful built-in data structures.</p>
+
+            <h3>1. Lists</h3>
+            <p>A list is an ordered, mutable (changeable) collection of items. Lists can contain items of different data types.</p>
+            <h4>Creating Lists:</h4>
+            <pre>
+empty_list <code class="code-operator">=</code> []
+numbers <code class="code-operator">=</code> [<code class="code-number">1</code>, <code class="code-number">2</code>, <code class="code-number">3</code>, <code class="code-number">4</code>, <code class="code-number">5</code>]
+mixed_list <code class="code-operator">=</code> [<code class="code-number">1</code>, <code class="code-string">"hello"</code>, <code class="code-number">3.14</code>, <code class="code-builtin">True</code>]
+list_of_lists <code class="code-operator">=</code> [[<code class="code-number">1</code>, <code class="code-number">2</code>], [<code class="code-number">3</code>, <code class="code-number">4</code>]]
+            </pre>
+            <h4>Accessing Elements (Indexing and Slicing):</h4>
+            <pre>
+my_list <code class="code-operator">=</code> [<code class="code-string">'a'</code>, <code class="code-string">'b'</code>, <code class="code-string">'c'</code>, <code class="code-string">'d'</code>, <code class="code-string">'e'</code>]
+<code class="code-function">print</code>(<code class="code-string">f"First element: {my_list[<code class="code-number">0</code>]}"</code>)         <code class="code-comment"># Output: 'a' (0-based indexing)</code>
+<code class="code-function">print</code>(<code class="code-string">f"Last element: {my_list[<code class="code-operator">-</code><code class="code-number">1</code>]}"</code>)        <code class="code-comment"># Output: 'e' (negative indexing)</code>
+<code class="code-function">print</code>(<code class="code-string">f"Slice (1 to 3): {my_list[<code class="code-number">1</code>:<code class="code-number">4</code>]}"</code>)   <code class="code-comment"># Output: ['b', 'c', 'd'] (index 4 is exclusive)</code>
+<code class="code-function">print</code>(<code class="code-string">f"Slice from start: {my_list[:<code class="code-number">3</code>]}"</code>)   <code class="code-comment"># Output: ['a', 'b', 'c']</code>
+<code class="code-function">print</code>(<code class="code-string">f"Slice to end: {my_list[<code class="code-number">2</code>:]}"</code>)       <code class="code-comment"># Output: ['c', 'd', 'e']</code>
+            </pre>
+            <h4>Modifying Lists:</h4>
+            <pre>
+my_list <code class="code-operator">=</code> [<code class="code-number">10</code>, <code class="code-number">20</code>, <code class="code-number">30</code>]
+my_list[<code class="code-number">1</code>] <code class="code-operator">=</code> <code class="code-number">25</code>                  <code class="code-comment"># Change element at index 1</code>
+<code class="code-function">print</code>(<code class="code-string">f"Modified list: {my_list}"</code>) <code class="code-comment"># Output: [10, 25, 30]</code>
+
+my_list.<code class="code-function">append</code>(<code class="code-number">40</code>)             <code class="code-comment"># Add to the end</code>
+<code class="code-function">print</code>(<code class="code-string">f"After append: {my_list}"</code>)  <code class="code-comment"># Output: [10, 25, 30, 40]</code>
+
+my_list.<code class="code-function">insert</code>(<code class="code-number">1</code>, <code class="code-number">15</code>)           <code class="code-comment"># Insert 15 at index 1</code>
+<code class="code-function">print</code>(<code class="code-string">f"After insert: {my_list}"</code>)  <code class="code-comment"># Output: [10, 15, 25, 30, 40]</code>
+
+removed_item <code class="code-operator">=</code> my_list.<code class="code-function">pop</code>()    <code class="code-comment"># Remove and return last item (40)</code>
+<code class="code-function">print</code>(<code class="code-string">f"After pop: {my_list}, Removed: {removed_item}"</code>)
+
+my_list.<code class="code-function">remove</code>(<code class="code-number">15</code>)              <code class="code-comment"># Remove first occurrence of 15</code>
+<code class="code-function">print</code>(<code class="code-string">f"After remove: {my_list}"</code>)
+
+<code class="code-keyword">del</code> my_list[<code class="code-number">0</code>]                <code class="code-comment"># Delete item at index 0</code>
+<code class="code-function">print</code>(<code class="code-string">f"After del: {my_list}"</code>)
+            </pre>
+            <h4>Other List Methods:</h4>
+            <code>extend(iterable)</code>, <code>sort()</code>, <code>reverse()</code>, <code>copy()</code>, <code>clear()</code>, <code>count(item)</code>, <code>index(item)</code>.
+
+            <h4>List Comprehensions:</h4>
+            <p>A concise way to create lists.</p>
+            <pre>
+squares <code class="code-operator">=</code> [x<code class="code-operator">**</code><code class="code-number">2</code> <code class="code-keyword">for</code> x <code class="code-keyword">in</code> <code class="code-builtin">range</code>(<code class="code-number">1</code>, <code class="code-number">6</code>)] <code class="code-comment"># [1, 4, 9, 16, 25]</code>
+<code class="code-function">print</code>(<code class="code-string">f"Squares: {squares}"</code>)
+
+even_numbers <code class="code-operator">=</code> [x <code class="code-keyword">for</code> x <code class="code-keyword">in</code> <code class="code-builtin">range</code>(<code class="code-number">10</code>) <code class="code-keyword">if</code> x <code class="code-operator">%</code> <code class="code-number">2</code> <code class="code-operator">==</code> <code class="code-number">0</code>] <code class="code-comment"># [0, 2, 4, 6, 8]</code>
+<code class="code-function">print</code>(<code class="code-string">f"Even numbers: {even_numbers}"</code>)
+            </pre>
+
+            <h3>2. Tuples</h3>
+            <p>A tuple is an ordered, immutable (unchangeable) collection of items. Once a tuple is created, you cannot change its content.</p>
+            <h4>Creating Tuples:</h4>
+            <pre>
+empty_tuple <code class="code-operator">=</code> ()
+single_item_tuple <code class="code-operator">=</code> (<code class="code-string">"hello"</code>,) <code class="code-comment"># Note the trailing comma!</code>
+my_tuple <code class="code-operator">=</code> (<code class="code-number">1</code>, <code class="code-string">"apple"</code>, <code class="code-number">3.14</code>)
+<code class="code-comment"># Parentheses are optional in some cases for tuple creation:</code>
+another_tuple <code class="code-operator">=</code> <code class="code-number">10</code>, <code class="code-number">20</code>, <code class="code-string">"_world_"</code>
+            </pre>
+            <h4>Accessing Elements:</h4>
+            <p>Same as lists (indexing and slicing).</p>
+            <pre>
+<code class="code-function">print</code>(<code class="code-string">f"First element of my_tuple: {my_tuple[<code class="code-number">0</code>]}"</code>) <code class="code-comment"># Output: 1</code>
+            </pre>
+            <h4>Why use Tuples?</h4>
+            <ul>
+                <li>For data that should not change (immutability ensures data integrity).</li>
+                <li>Can be used as keys in dictionaries (because they are immutable).</li>
+                <li>Often used for fixed collections of items, like coordinates (x, y).</li>
+                <li>Slightly more memory efficient and faster to iterate over than lists (for very large collections).</li>
+            </ul>
+            <h4>Tuple Packing and Unpacking:</h4>
+            <pre>
+<code class="code-comment"># Packing</code>
+point <code class="code-operator">=</code> (<code class="code-number">10</code>, <code class="code-number">20</code>)
+
+<code class="code-comment"># Unpacking</code>
+x, y <code class="code-operator">=</code> point
+<code class="code-function">print</code>(<code class="code-string">f"x: {x}, y: {y}"</code>) <code class="code-comment"># Output: x: 10, y: 20</code>
+            </pre>
+
+            <h3>3. Dictionaries</h3>
+            <p>A dictionary is an unordered (Python < 3.7) or ordered (Python 3.7+) collection of key-value pairs. Keys must be unique and immutable (e.g., strings, numbers, tuples). Dictionaries are mutable.</p>
+            <h4>Creating Dictionaries:</h4>
+            <pre>
+empty_dict <code class="code-operator">=</code> {}
+student <code class="code-operator">=</code> {
+    <code class="code-string">"name"</code>: <code class="code-string">"Alice"</code>,
+    <code class="code-string">"age"</code>: <code class="code-number">21</code>,
+    <code class="code-string">"major"</code>: <code class="code-string">"Computer Science"</code>
+}
+<code class="code-comment"># Using dict() constructor</code>
+car <code class="code-operator">=</code> <code class="code-builtin">dict</code>(brand<code class="code-operator">=</code><code class="code-string">"Ford"</code>, model<code class="code-operator">=</code><code class="code-string">"Mustang"</code>, year<code class="code-operator">=</code><code class="code-number">1964</code>)
+            </pre>
+            <h4>Accessing and Modifying Values:</h4>
+            <pre>
+<code class="code-function">print</code>(<code class="code-string">f"Student name: {student[<code class="code-string">'name'</code>]}"</code>) <code class="code-comment"># Access using key</code>
+<code class="code-function">print</code>(<code class="code-string">f"Student major (get): {student.<code class="code-function">get</code>(<code class="code-string">'major'</code>, <code class="code-string">'N/A'</code>)}"</code>) <code class="code-comment"># Safe access with default</code>
+
+student[<code class="code-string">'age'</code>] <code class="code-operator">=</code> <code class="code-number">22</code>                 <code class="code-comment"># Modify existing value</code>
+student[<code class="code-string">'grade'</code>] <code class="code-operator">=</code> <code class="code-string">'A'</code>                <code class="code-comment"># Add new key-value pair</code>
+<code class="code-function">print</code>(<code class="code-string">f"Updated student: {student}"</code>)
+
+removed_major <code class="code-operator">=</code> student.<code class="code-function">pop</code>(<code class="code-string">'major'</code>) <code class="code-comment"># Remove item by key and return its value</code>
+<code class="code-function">print</code>(<code class="code-string">f"After pop: {student}, Removed: {removed_major}"</code>)
+
+<code class="code-keyword">del</code> student[<code class="code-string">'grade'</code>]            <code class="code-comment"># Delete item by key</code>
+<code class="code-function">print</code>(<code class="code-string">f"After del: {student}"</code>)
+            </pre>
+            <h4>Dictionary Methods:</h4>
+            <code>keys()</code>, <code>values()</code>, <code>items()</code> (for iterating), <code>update(other_dict)</code>, <code>clear()</code>.
+            <pre>
+<code class="code-function">print</code>(<code class="code-string">f"Keys: {student.<code class="code-function">keys</code>()}"</code>)
+<code class="code-function">print</code>(<code class="code-string">f"Values: {student.<code class="code-function">values</code>()}"</code>)
+<code class="code-function">print</code>(<code class="code-string">f"Items: {student.<code class="code-function">items</code>()}"</code>) <code class="code-comment"># Returns view objects of (key, value) tuples</code>
+
+<code class="code-keyword">for</code> key, value <code class="code-keyword">in</code> student.<code class="code-function">items</code>():
+    <code class="code-function">print</code>(<code class="code-string">f"{key}: {value}"</code>)
+            </pre>
+            <h4>Dictionary Comprehensions:</h4>
+            <pre>
+squared_numbers <code class="code-operator">=</code> {x: x<code class="code-operator">**</code><code class="code-number">2</code> <code class="code-keyword">for</code> x <code class="code-keyword">in</code> <code class="code-builtin">range</code>(<code class="code-number">1</code>, <code class="code-number">6</code>)}
+<code class="code-comment"># Output: {1: 1, 2: 4, 3: 9, 4: 16, 5: 25}</code>
+<code class="code-function">print</code>(<code class="code-string">f"Squared numbers dict: {squared_numbers}"</code>)
+            </pre>
+
+            <h3>4. Sets</h3>
+            <p>A set is an unordered collection of unique, immutable items. Sets are mutable (you can add/remove items). They are useful for membership testing, removing duplicates, and mathematical set operations.</p>
+            <h4>Creating Sets:</h4>
+            <pre>
+empty_set <code class="code-operator">=</code> <code class="code-builtin">set</code>() <code class="code-comment"># Important: {} creates an empty dictionary, not a set</code>
+my_set <code class="code-operator">=</code> {<code class="code-number">1</code>, <code class="code-number">2</code>, <code class="code-number">3</code>, <code class="code-string">"apple"</code>, <code class="code-number">2</code>} <code class="code-comment"># Duplicates are automatically removed</code>
+<code class="code-function">print</code>(<code class="code-string">f"My set: {my_set}"</code>) <code class="code-comment"># Output might be {1, 2, 3, 'apple'} (order not guaranteed)</code>
+
+list_with_duplicates <code class="code-operator">=</code> [<code class="code-number">1</code>, <code class="code-number">2</code>, <code class="code-number">2</code>, <code class="code-number">3</code>, <code class="code-number">4</code>, <code class="code-number">4</code>, <code class="code-number">4</code>]
+unique_items_set <code class="code-operator">=</code> <code class="code-builtin">set</code>(list_with_duplicates)
+<code class="code-function">print</code>(<code class="code-string">f"Set from list: {unique_items_set}"</code>) <code class="code-comment"># Output: {1, 2, 3, 4}</code>
+            </pre>
+            <h4>Set Operations:</h4>
+            <pre>
+set_a <code class="code-operator">=</code> {<code class="code-number">1</code>, <code class="code-number">2</code>, <code class="code-number">3</code>, <code class="code-number">4</code>}
+set_b <code class="code-operator">=</code> {<code class="code-number">3</code>, <code class="code-number">4</code>, <code class="code-number">5</code>, <code class="code-number">6</code>}
+
+<code class="code-comment">// Union: items in either set_a or set_b or both</code>
+<code class="code-function">print</code>(<code class="code-string">f"Union (A | B): {set_a <code class="code-operator">|</code> set_b}"</code>) <code class="code-comment"># or set_a.union(set_b)</code>
+
+<code class="code-comment">// Intersection: items common to both set_a and set_b</code>
+<code class="code-function">print</code>(<code class="code-string">f"Intersection (A & B): {set_a <code class="code-operator">&</code> set_b}"</code>) <code class="code-comment"># or set_a.intersection(set_b)</code>
+
+<code class="code-comment">// Difference: items in set_a but not in set_b</code>
+<code class="code-function">print</code>(<code class="code-string">f"Difference (A - B): {set_a <code class="code-operator">-</code> set_b}"</code>) <code class="code-comment"># or set_a.difference(set_b)</code>
+<code class="code-function">print</code>(<code class="code-string">f"Difference (B - A): {set_b <code class="code-operator">-</code> set_a}"</code>) <code class="code-comment"># or set_b.difference(set_a)</code>
+
+<code class="code-comment">// Symmetric Difference: items in either A or B, but not both</code>
+<code class="code-function">print</code>(<code class="code-string">f"Symmetric Diff (A ^ B): {set_a <code class="code-operator">^</code> set_b}"</code>) <code class="code-comment"># or set_a.symmetric_difference(set_b)</code>
+            </pre>
+            <h4>Set Methods:</h4>
+            <code>add(item)</code>, <code>remove(item)</code> (raises KeyError if not found), <code>discard(item)</code> (no error if not found), <code>pop()</code> (removes and returns an arbitrary item), <code>clear()</code>.
+
+            <div class="button-nav-group">
+                <button onclick="navigateTo('#controlflow')" class="button prev">&larr; Prev: Control Flow</button>
+                <button onclick="navigateTo('#strings')" class="button next">Next: String Manipulation &rarr;</button>
+            </div>
+        </div>
+
+        <!-- 6. String Manipulation -->
+        <div id="strings" class="page-content">
+            <h1>6. String Manipulation</h1>
+            <p>Strings are sequences of characters and are one of the most commonly used data types. Python provides a rich set of tools for working with strings. Remember, strings are immutable.</p>
+
+            <h3>Creating Strings</h3>
+            <pre>
+single_quotes <code class="code-operator">=</code> <code class="code-string">'Hello'</code>
+double_quotes <code class="code-operator">=</code> <code class="code-string">"World"</code>
+triple_quotes_multiline <code class="code-operator">=</code> <code class="code-string">'''This is
+a multi-line
+string.'''</code>
+empty_string <code class="code-operator">=</code> <code class="code-string">""</code>
+            </pre>
+
+            <h3>String Concatenation and Repetition</h3>
+            <pre>
+first_name <code class="code-operator">=</code> <code class="code-string">"John"</code>
+last_name <code class="code-operator">=</code> <code class="code-string">"Doe"</code>
+full_name <code class="code-operator">=</code> first_name <code class="code-operator">+</code> <code class="code-string">" "</code> <code class="code-operator">+</code> last_name <code class="code-comment"># Concatenation</code>
+<code class="code-function">print</code>(<code class="code-string">f"Full Name: {full_name}"</code>) <code class="code-comment"># Output: John Doe</code>
+
+separator <code class="code-operator">=</code> <code class="code-string">"-"</code> <code class="code-operator">*</code> <code class="code-number">10</code> <code class="code-comment"># Repetition</code>
+<code class="code-function">print</code>(<code class="code-string">f"Separator: {separator}"</code>) <code class="code-comment"># Output: ----------</code>
+            </pre>
+
+            <h3>Accessing Characters (Indexing and Slicing)</h3>
+            <p>Works just like lists and tuples.</p>
+            <pre>
+text <code class="code-operator">=</code> <code class="code-string">"Python"</code>
+<code class="code-function">print</code>(<code class="code-string">f"First char: {text[<code class="code-number">0</code>]}"</code>)   <code class="code-comment"># Output: P</code>
+<code class="code-function">print</code>(<code class="code-string">f"Last char: {text[<code class="code-operator">-</code><code class="code-number">1</code>]}"</code>)    <code class="code-comment"># Output: n</code>
+<code class="code-function">print</code>(<code class="code-string">f"Slice: {text[<code class="code-number">1</code>:<code class="code-number">4</code>]}"</code>)    <code class="code-comment"># Output: yth (from index 1 up to, not including, 4)</code>
+<code class="code-function">print</code>(<code class="code-string">f"Slice with step: {text[<code class="code-number">0</code>:<code class="code-number">6</code>:<code class="code-number">2</code>]}"</code>) <code class="code-comment"># Output: Pto (every 2nd char)</code>
+<code class="code-function">print</code>(<code class="code-string">f"Reverse string: {text[::<code class="code-operator">-</code><code class="code-number">1</code>]}"</code>) <code class="code-comment"># Output: nohtyP</code>
+            </pre>
+
+            <h3>Common String Methods</h3>
+            <p>String methods return new strings (due to immutability).</p>
+            <pre>
+s <code class="code-operator">=</code> <code class="code-string">"  Hello, World!  "</code>
+
+<code class="code-function">print</code>(<code class="code-string">f"Length: {<code class="code-builtin">len</code>(s)}"</code>) <code class="code-comment"># Output: 19 (general function, not a method)</code>
+<code class="code-function">print</code>(<code class="code-string">f"Lowercase: '{s.<code class="code-function">lower</code>()}'"</code>) <code class="code-comment"># Output: '  hello, world!  '</code>
+<code class="code-function">print</code>(<code class="code-string">f"Uppercase: '{s.<code class="code-function">upper</code>()}'"</code>) <code class="code-comment"># Output: '  HELLO, WORLD!  '</code>
+<code class="code-function">print</code>(<code class="code-string">f"Strip whitespace: '{s.<code class="code-function">strip</code>()}'"</code>) <code class="code-comment"># Output: 'Hello, World!' (removes leading/trailing)</code>
+<code class="code-function">print</code>(<code class="code-string">f"Lstrip: '{s.<code class="code-function">lstrip</code>()}'"</code>) <code class="code-comment"># Output: 'Hello, World!  ' (removes leading)</code>
+<code class="code-function">print</code>(<code class="code-string">f"Rstrip: '{s.<code class="code-function">rstrip</code>()}'"</code>) <code class="code-comment"># Output: '  Hello, World!' (removes trailing)</code>
+
+<code class="code-function">print</code>(<code class="code-string">f"Replace 'World' with 'Python': '{s.<code class="code-function">replace</code>(<code class="code-string">'World'</code>, <code class="code-string">'Python'</code>)}'"</code>)
+<code class="code-comment"># Output: '  Hello, Python!  '</code>
+
+csv_data <code class="code-operator">=</code> <code class="code-string">"apple,banana,cherry"</code>
+fruits_list <code class="code-operator">=</code> csv_data.<code class="code-function">split</code>(<code class="code-string">','</code>)
+<code class="code-function">print</code>(<code class="code-string">f"Split string: {fruits_list}"</code>) <code class="code-comment"># Output: ['apple', 'banana', 'cherry']</code>
+
+words <code class="code-operator">=</code> [<code class="code-string">'Hello'</code>, <code class="code-string">'Python'</code>, <code class="code-string">'World'</code>]
+sentence <code class="code-operator">=</code> <code class="code-string">" "</code>.<code class="code-function">join</code>(words)
+<code class="code-function">print</code>(<code class="code-string">f"Joined list: '{sentence}'"</code>) <code class="code-comment"># Output: 'Hello Python World'</code>
+
+<code class="code-function">print</code>(<code class="code-string">f"Starts with '  H': {s.<code class="code-function">startswith</code>(<code class="code-string">'  H'</code>)}"</code>) <code class="code-comment"># Output: True</code>
+<code class="code-function">print</code>(<code class="code-string">f"Ends with '!  ': {s.<code class="code-function">endswith</code>(<code class="code-string">'!  '</code>)}"</code>) <code class="code-comment"># Output: True</code>
+
+<code class="code-function">print</code>(<code class="code-string">f"Find 'o': {s.<code class="code-function">find</code>(<code class="code-string">'o'</code>)}"</code>) <code class="code-comment"># Output: 6 (index of first occurrence, -1 if not found)</code>
+<code class="code-function">print</code>(<code class="code-string">f"Count 'l': {s.<code class="code-function">count</code>(<code class="code-string">'l'</code>)}"</code>) <code class="code-comment"># Output: 3</code>
+            </pre>
+            <p>Other useful methods: <code>capitalize()</code>, <code>title()</code>, <code>isalpha()</code>, <code>isdigit()</code>, <code>isalnum()</code>, <code>isspace()</code>, etc.</p>
+
+            <h3>String Formatting</h3>
+            <p>Creating strings by embedding expressions or variables inside them.</p>
+            
+            <h4>1. f-Strings (Formatted String Literals) - Recommended</h4>
+            <p>Available in Python 3.6+. Concise and readable.</p>
+            <pre>
+name <code class="code-operator">=</code> <code class="code-string">"Alice"</code>
+age <code class="code-operator">=</code> <code class="code-number">30</code>
+greeting <code class="code-operator">=</code> <code class="code-string">f"Hello, my name is {name} and I am {age} years old."</code>
+<code class="code-function">print</code>(greeting)
+<code class="code-comment"># Output: Hello, my name is Alice and I am 30 years old.</code>
+
+pi <code class="code-operator">=</code> <code class="code-number">3.14159265</code>
+<code class="code-function">print</code>(<code class="code-string">f"Pi to 2 decimal places: {pi:<code class="code-number">.2f</code>}"</code>) <code class="code-comment"># Formatting within f-string</code>
+<code class="code-comment"># Output: Pi to 2 decimal places: 3.14</code>
+            </pre>
+
+            <h4>2. <code>str.format()</code> Method</h4>
+            <p>Available in Python 2.6+ and 3.x. More verbose than f-strings.</p>
+            <pre>
+item <code class="code-operator">=</code> <code class="code-string">"book"</code>
+price <code class="code-operator">=</code> <code class="code-number">19.99</code>
+message1 <code class="code-operator">=</code> <code class="code-string">"The {} costs ${}."</code>.<code class="code-function">format</code>(item, price)
+<code class="code-function">print</code>(message1)
+
+message2 <code class="code-operator">=</code> <code class="code-string">"The {product} costs ${cost:<code class="code-number">.2f</code>}."</code>.<code class="code-function">format</code>(product<code class="code-operator">=</code>item, cost<code class="code-operator">=</code>price)
+<code class="code-function">print</code>(message2)
+            </pre>
+
+            <h4>3. <code>%</code> Operator (Older style)</h4>
+            <p>Similar to C's `printf`. Generally not recommended for new code.</p>
+            <pre>
+name <code class="code-operator">=</code> <code class="code-string">"Bob"</code>
+value <code class="code-operator">=</code> <code class="code-number">42</code>
+old_style <code class="code-operator">=</code> <code class="code-string">"Name: %s, Value: %d"</code> <code class="code-operator">%</code> (name, value)
+<code class="code-function">print</code>(old_style)
+            </pre>
+
+            <div class="button-nav-group">
+                <button onclick="navigateTo('#datastructures')" class="button prev">&larr; Prev: Data Structures</button>
+                <button onclick="navigateTo('#functions')" class="button next">Next: Functions &rarr;</button>
+            </div>
+        </div>
+
+        <!-- 7. Functions Page Content -->
+        <div id="functions" class="page-content">
+            <h1>7. Functions</h1>
+            <p>Functions are blocks of reusable code designed to perform a specific task. They help make your code more organized, modular, readable, and reduce repetition (DRY - Don't Repeat Yourself).</p>
+
+            <h3>Defining a Function</h3>
+            <p>Use the <code>def</code> keyword, followed by the function name, parentheses <code>()</code> for parameters, and a colon <code>:</code>. The code block within the function must be indented.</p>
+            <pre>
+<code class="code-keyword">def</code> <code class="code-function">greet</code>(<code class="code-parameter">name</code>):
+    <code class="code-string">"""This is a docstring. It explains what the function does."""</code>
+    <code class="code-function">print</code>(<code class="code-string">f"Hello, {name}!"</code>)
+            </pre>
+            
+            <h4>Docstrings:</h4>
+            <p>The first statement in a function body can optionally be a string literal, which is the function's documentation string or "docstring". It's good practice to include docstrings to explain what your function does, its parameters, and what it returns.</p>
+
+            <h3>Calling a Function</h3>
+            <p>To execute a function, you "call" it by its name followed by parentheses, passing any required arguments.</p>
+            <pre>
+<code class="code-function">greet</code>(<code class="code-string">"Alice"</code>)  <code class="code-comment"># Output: Hello, Alice!</code>
+<code class="code-function">greet</code>(<code class="code-string">"Bob"</code>)    <code class="code-comment"># Output: Hello, Bob!</code>
+            </pre>
+
+            <h3>Parameters and Arguments</h3>
+            <ul>
+                <li><strong>Parameter:</strong> A variable listed inside the parentheses in the function definition.</li>
+                <li><strong>Argument:</strong> The actual value that is sent to the function when it is called.</li>
+            </ul>
+
+            <h3>Return Values</h3>
+            <p>Functions can return a value to the caller using the <code>return</code> statement. If no <code>return</code> statement is specified, or if it's used without an expression, the function implicitly returns <code>None</code>.</p>
+            <pre>
+<code class="code-keyword">def</code> <code class="code-function">add_numbers</code>(<code class="code-parameter">x</code>, <code class="code-parameter">y</code>):
+    <code class="code-keyword">return</code> x <code class="code-operator">+</code> y
+
+sum_result <code class="code-operator">=</code> <code class="code-function">add_numbers</code>(<code class="code-number">5</code>, <code class="code-number">3</code>)
+<code class="code-function">print</code>(<code class="code-string">f"Sum: {sum_result}"</code>)  <code class="code-comment"># Output: Sum: 8</code>
+
+<code class="code-keyword">def</code> <code class="code-function">no_return_value</code>():
+    <code class="code-function">print</code>(<code class="code-string">"This function doesn't explicitly return."</code>)
+
+result <code class="code-operator">=</code> <code class="code-function">no_return_value</code>()
+<code class="code-function">print</code>(<code class="code-string">f"Result of no_return_value: {result}"</code>) <code class="code-comment"># Output: Result of no_return_value: None</code>
+            </pre>
+
+            <h4>Returning Multiple Values:</h4>
+            <p>A function can return multiple values by returning them as a tuple (or list, or other collection).</p>
+            <pre>
+<code class="code-keyword">def</code> <code class="code-function">get_coordinates</code>():
+    <code class="code-keyword">return</code> <code class="code-number">10</code>, <code class="code-number">20</code> <code class="code-comment"># Returns a tuple (10, 20)</code>
+
+x_coord, y_coord <code class="code-operator">=</code> <code class="code-function">get_coordinates</code>() <code class="code-comment"># Tuple unpacking</code>
+<code class="code-function">print</code>(<code class="code-string">f"X: {x_coord}, Y: {y_coord}"</code>) <code class="code-comment"># Output: X: 10, Y: 20</code>
+            </pre>
+
+            <h3>Types of Arguments</h3>
+            <h4>1. Positional Arguments:</h4>
+            <p>Passed to a function in the order they are defined.</p>
+            <pre>
+<code class="code-keyword">def</code> <code class="code-function">describe_pet</code>(<code class="code-parameter">animal_type</code>, <code class="code-parameter">pet_name</code>):
+    <code class="code-function">print</code>(<code class="code-string">f"I have a {animal_type} named {pet_name}."</code>)
+
+<code class="code-function">describe_pet</code>(<code class="code-string">"dog"</code>, <code class="code-string">"Buddy"</code>)
+            </pre>
+            <h4>2. Keyword Arguments:</h4>
+            <p>Passed using `name=value` syntax. Order doesn't matter if keywords are used.</p>
+            <pre>
+<code class="code-function">describe_pet</code>(pet_name<code class="code-operator">=</code><code class="code-string">"Lucy"</code>, animal_type<code class="code-operator">=</code><code class="code-string">"cat"</code>)
+            </pre>
+            <h4>3. Default Parameter Values:</h4>
+            <p>You can specify default values for parameters. Parameters with defaults must come after those without defaults.</p>
+            <pre>
+<code class="code-keyword">def</code> <code class="code-function">power</code>(<code class="code-parameter">base</code>, <code class="code-parameter">exponent</code><code class="code-operator">=</code><code class="code-number">2</code>): <code class="code-comment"># exponent has a default value</code>
+    <code class="code-keyword">return</code> base <code class="code-operator">**</code> exponent
+
+<code class="code-function">print</code>(<code class="code-string">f"3 squared: {<code class="code-function">power</code>(<code class="code-number">3</code>)}"</code>)          <code class="code-comment"># Output: 9 (uses default exponent)</code>
+<code class="code-function">print</code>(<code class="code-string">f"2 cubed: {<code class="code-function">power</code>(<code class="code-number">2</code>, <code class="code-number">3</code>)}"</code>)      <code class="code-comment"># Output: 8 (overrides default)</code>
+            </pre>
+            <div class="note"><strong>Mutable Default Arguments:</strong> Be careful when using mutable objects (like lists or dictionaries) as default arguments. The default is created only once when the function is defined. If modified, subsequent calls will use the modified default. It's often better to default to `None` and create the mutable object inside the function.
+                <pre>
+<code class="code-comment"># Potentially problematic:</code>
+<code class="code-keyword">def</code> <code class="code-function">add_to_list_bad</code>(<code class="code-parameter">item</code>, <code class="code-parameter">my_list</code><code class="code-operator">=</code>[]):
+    my_list.<code class="code-function">append</code>(item)
+    <code class="code-keyword">return</code> my_list
+
+<code class="code-comment"># Better approach:</code>
+<code class="code-keyword">def</code> <code class="code-function">add_to_list_good</code>(<code class="code-parameter">item</code>, <code class="code-parameter">my_list</code><code class="code-operator">=</code><code class="code-builtin">None</code>):
+    <code class="code-keyword">if</code> my_list <code class="code-keyword">is</code> <code class="code-builtin">None</code>:
+        my_list <code class="code-operator">=</code> []
+    my_list.<code class="code-function">append</code>(item)
+    <code class="code-keyword">return</code> my_list
+                </pre>
+            </div>
+
+            <h4>4. Variable-Length Arguments (<code>*args</code> and <code>**kwargs</code>)</h4>
+            <h5><code>*args</code> (Arbitrary Positional Arguments):</h5>
+            <p>Allows a function to accept any number of positional arguments. These are collected into a tuple.</p>
+            <pre>
+<code class="code-keyword">def</code> <code class="code-function">print_all</code>(<code class="code-operator">*</code><code class="code-parameter">args</code>):
+    <code class="code-function">print</code>(<code class="code-string">f"Arguments received (tuple): {args}"</code>)
+    <code class="code-keyword">for</code> arg <code class="code-keyword">in</code> args:
+        <code class="code-function">print</code>(arg)
+
+<code class="code-function">print_all</code>(<code class="code-number">1</code>, <code class="code-string">"hello"</code>, <code class="code-number">3.14</code>)
+            </pre>
+            <h5><code>**kwargs</code> (Arbitrary Keyword Arguments):</h5>
+            <p>Allows a function to accept any number of keyword arguments. These are collected into a dictionary.</p>
+            <pre>
+<code class="code-keyword">def</code> <code class="code-function">print_info</code>(<code class="code-operator">**</code><code class="code-parameter">kwargs</code>):
+    <code class="code-function">print</code>(<code class="code-string">f"Keyword arguments (dict): {kwargs}"</code>)
+    <code class="code-keyword">for</code> key, value <code class="code-keyword">in</code> kwargs.<code class="code-function">items</code>():
+        <code class="code-function">print</code>(<code class="code-string">f"{key}: {value}"</code>)
+
+<code class="code-function">print_info</code>(name<code class="code-operator">=</code><code class="code-string">"Alice"</code>, age<code class="code-operator">=</code><code class="code-number">25</code>, city<code class="code-operator">=</code><code class="code-string">"New York"</code>)
+            </pre>
+            <p>You can use regular parameters, `*args`, and `**kwargs` together in a function definition, in that order.</p>
+
+            <h3>Scope of Variables (LEGB Rule)</h3>
+            <p>Scope determines the visibility and lifetime of a variable.</p>
+            <ul>
+                <li><strong>Local Scope:</strong> Variables defined inside a function are local to that function. They cannot be accessed outside it.</li>
+                <li><strong>Global Scope:</strong> Variables defined outside of any function are global. They can be accessed (but not directly modified without `global` keyword) from within functions.</li>
+            </ul>
+            <pre>
+global_var <code class="code-operator">=</code> <code class="code-string">"I am global"</code>
+
+<code class="code-keyword">def</code> <code class="code-function">my_function</code>():
+    local_var <code class="code-operator">=</code> <code class="code-string">"I am local"</code>
+    <code class="code-function">print</code>(local_var)
+    <code class="code-function">print</code>(global_var) <code class="code-comment"># Can access global_var</code>
+
+<code class="code-function">my_function</code>()
+<code class="code-comment"># print(local_var) # This would cause a NameError</code>
+
+<code class="code-keyword">def</code> <code class="code-function">modify_global</code>():
+    <code class="code-keyword">global</code> global_var <code class="code-comment"># Declare intent to modify global variable</code>
+    global_var <code class="code-operator">=</code> <code class="code-string">"Modified global"</code>
+
+<code class="code-function">modify_global</code>()
+<code class="code-function">print</code>(global_var) <code class="code-comment"># Output: Modified global</code>
+            </pre>
+            <p>The LEGB rule describes the order Python searches for names: Local, Enclosing function locals, Global, Built-in.</p>
+
+            <h3>Lambda Functions (Anonymous Functions)</h3>
+            <p>Small, single-expression anonymous functions defined using the <code>lambda</code> keyword. Often used for short operations where a full function definition is too verbose.</p>
+            <pre>
+<code class="code-comment"># lambda arguments: expression</code>
+add <code class="code-operator">=</code> <code class="code-keyword">lambda</code> <code class="code-parameter">a</code>, <code class="code-parameter">b</code>: a <code class="code-operator">+</code> b
+<code class="code-function">print</code>(<code class="code-string">f"Lambda add(5, 3): {add(<code class="code-number">5</code>, <code class="code-number">3</code>)}"</code>) <code class="code-comment"># Output: 8</code>
+
+points <code class="code-operator">=</code> [(<code class="code-number">1</code>, <code class="code-number">2</code>), (<code class="code-number">3</code>, <code class="code-number">1</code>), (<code class="code-number">5</code>, <code class="code-number">4</code>)]
+<code class="code-comment"># Sort points by the second element of each tuple</code>
+points.<code class="code-function">sort</code>(key<code class="code-operator">=</code><code class="code-keyword">lambda</code> point: point[<code class="code-number">1</code>])
+<code class="code-function">print</code>(<code class="code-string">f"Sorted points: {points}"</code>) <code class="code-comment"># Output: [(3, 1), (1, 2), (5, 4)]</code>
+            </pre>
+            
+            <div class="button-nav-group">
+                <button onclick="navigateTo('#strings')" class="button prev">&larr; Prev: String Manipulation</button>
+                <button onclick="navigateTo('#exceptions')" class="button next">Next: Exceptions &rarr;</button>
+            </div>
+        </div>
+
+        <!-- 8. Error and Exception Handling -->
+        <div id="exceptions" class="page-content">
+            <h1>8. Error and Exception Handling</h1>
+            <p>Errors are inevitable in programming. Python uses exceptions to manage errors that occur during program execution. Proper exception handling makes your code more robust and user-friendly.</p>
+
+            <h3>Syntax Errors vs. Exceptions</h3>
+            <ul>
+                <li><strong>Syntax Errors (Parsing Errors):</strong> Occur when your code violates Python's syntax rules. The interpreter catches these before execution begins.
+                    <pre><code class="code-comment"># Example of a syntax error (missing colon)</code>
+<code class="code-comment"># if x > 5</code>
+<code class="code-comment">#    print("x is greater than 5")</code></pre>
+                </li>
+                <li><strong>Exceptions (Runtime Errors):</strong> Occur during the execution of the program if something unexpected happens, even if the syntax is correct.
+                    <pre>
+<code class="code-comment"># Example of a runtime error (ZeroDivisionError)</code>
+<code class="code-comment"># result = 10 / 0</code>
+
+<code class="code-comment"># Example of a runtime error (TypeError)</code>
+<code class="code-comment"># result = "hello" + 5</code>
+                    </pre>
+                </li>
+            </ul>
+
+            <h3>Common Built-in Exceptions</h3>
+            <ul>
+                <li><code>TypeError</code>: Operation or function applied to an object of inappropriate type.</li>
+                <li><code>ValueError</code>: Operation or function receives an argument with the right type but an inappropriate value.</li>
+                <li><code>NameError</code>: A local or global name is not found.</li>
+                <li><code>IndexError</code>: A sequence subscript is out of range.</li>
+                <li><code>KeyError</code>: A dictionary key is not found.</li>
+                <li><code>FileNotFoundError</code>: Attempting to open a file that does not exist.</li>
+                <li><code>ZeroDivisionError</code>: Division or modulo by zero.</li>
+                <li><code>AttributeError</code>: Attempting to access an attribute or method that an object doesn't have.</li>
+                <li><code>ImportError</code>: The `import` statement fails to find the module definition.</li>
+            </ul>
+
+            <h3>Handling Exceptions: The <code>try-except</code> Block</h3>
+            <p>You can handle exceptions using a <code>try-except</code> block.
+            Code that might raise an exception is placed in the <code>try</code> block.
+            If an exception occurs, the code in the corresponding <code>except</code> block is executed.</p>
+            <pre>
+<code class="code-keyword">try</code>:
+    numerator <code class="code-operator">=</code> <code class="code-number">10</code>
+    denominator <code class="code-operator">=</code> <code class="code-builtin">int</code>(<code class="code-builtin">input</code>(<code class="code-string">"Enter a denominator: "</code>))
+    result <code class="code-operator">=</code> numerator <code class="code-operator">/</code> denominator
+    <code class="code-function">print</code>(<code class="code-string">f"Result: {result}"</code>)
+<code class="code-keyword">except</code> <code class="code-class">ZeroDivisionError</code>:
+    <code class="code-function">print</code>(<code class="code-string">"Error: Cannot divide by zero!"</code>)
+<code class="code-keyword">except</code> <code class="code-class">ValueError</code>:
+    <code class="code-function">print</code>(<code class="code-string">"Error: Please enter a valid integer for the denominator."</code>)
+<code class="code-keyword">except</code> <code class="code-class">Exception</code> <code class="code-keyword">as</code> e: <code class="code-comment"># Catch any other exceptions (general)</code>
+    <code class="code-function">print</code>(<code class="code-string">f"An unexpected error occurred: {e}"</code>)
+<code class="code-function">print</code>(<code class="code-string">"Program continues after try-except block."</code>)
+            </pre>
+            <p>It's good practice to catch specific exceptions first, followed by more general ones. Catching `Exception` (or a bare `except:`) will catch almost all exceptions, which can sometimes hide bugs.</p>
+
+            <h3>The <code>else</code> Clause</h3>
+            <p>The optional <code>else</code> block is executed if the <code>try</code> block completes without raising any exceptions.</p>
+            <pre>
+<code class="code-keyword">try</code>:
+    num <code class="code-operator">=</code> <code class="code-builtin">int</code>(<code class="code-builtin">input</code>(<code class="code-string">"Enter a number: "</code>))
+<code class="code-keyword">except</code> <code class="code-class">ValueError</code>:
+    <code class="code-function">print</code>(<code class="code-string">"That was not a valid number."</code>)
+<code class="code-keyword">else</code>:
+    <code class="code-function">print</code>(<code class="code-string">f"You entered {num}. Square is {num<code class="code-operator">**</code><code class="code-number">2</code>}."</code>)
+            </pre>
+
+            <h3>The <code>finally</code> Clause</h3>
+            <p>The optional <code>finally</code> block is always executed, whether an exception occurred or not. It's typically used for cleanup actions, like closing files or releasing resources.</p>
+            <pre>
+file <code class="code-operator">=</code> <code class="code-builtin">None</code> <code class="code-comment"># Initialize file to None</code>
+<code class="code-keyword">try</code>:
+    file <code class="code-operator">=</code> <code class="code-builtin">open</code>(<code class="code-string">"my_data.txt"</code>, <code class="code-string">"r"</code>)
+    content <code class="code-operator">=</code> file.<code class="code-function">read</code>()
+    <code class="code-function">print</code>(content)
+<code class="code-keyword">except</code> <code class="code-class">FileNotFoundError</code>:
+    <code class="code-function">print</code>(<code class="code-string">"Error: my_data.txt not found."</code>)
+<code class="code-keyword">except</code> <code class="code-class">Exception</code> <code class="code-keyword">as</code> e:
+    <code class="code-function">print</code>(<code class="code-string">f"An error occurred: {e}"</code>)
+<code class="code-keyword">finally</code>:
+    <code class="code-keyword">if</code> file: <code class="code-comment"># Check if file was successfully opened</code>
+        file.<code class="code-function">close</code>()
+        <code class="code-function">print</code>(<code class="code-string">"File closed."</code>)
+    <code class="code-keyword">else</code>:
+        <code class="code-function">print</code>(<code class="code-string">"File was not opened, no need to close."</code>)
+            </pre>
+
+            <h3>Raising Exceptions (<code>raise</code>)</h3>
+            <p>You can explicitly raise an exception using the <code>raise</code> keyword. This is useful for signaling errors in your own functions based on certain conditions.</p>
+            <pre>
+<code class="code-keyword">def</code> <code class="code-function">validate_age</code>(<code class="code-parameter">age</code>):
+    <code class="code-keyword">if</code> age <code class="code-operator">&lt;</code> <code class="code-number">0</code>:
+        <code class="code-keyword">raise</code> <code class="code-class">ValueError</code>(<code class="code-string">"Age cannot be negative."</code>)
+    <code class="code-keyword">elif</code> age <code class="code-operator">&lt;</code> <code class="code-number">18</code>:
+        <code class="code-keyword">raise</code> <code class="code-class">ValueError</code>(<code class="code-string">"User must be 18 or older."</code>)
+    <code class="code-function">print</code>(<code class="code-string">"Age is valid."</code>)
+
+<code class="code-keyword">try</code>:
+    <code class="code-function">validate_age</code>(<code class="code-number">25</code>)   <code class="code-comment"># Valid</code>
+    <code class="code-function">validate_age</code>(<code class="code-operator">-</code><code class="code-number">5</code>)    <code class="code-comment"># This will raise ValueError</code>
+<code class="code-keyword">except</code> <code class="code-class">ValueError</code> <code class="code-keyword">as</code> e:
+    <code class="code-function">print</code>(<code class="code-string">f"Validation Error: {e}"</code>)
+            </pre>
+            <p>You can raise built-in exceptions or define your own custom exceptions by creating a new class that inherits from `Exception` or one of its subclasses.</p>
+
+            <div class="button-nav-group">
+                <button onclick="navigateTo('#functions')" class="button prev">&larr; Prev: Functions</button>
+                <button onclick="navigateTo('#modules')" class="button next">Next: Modules & Packages &rarr;</button>
+            </div>
+        </div>
+
+        <!-- 9. Modules and Packages (Intro) -->
+        <div id="modules" class="page-content">
+            <h1>9. Modules and Packages (Basic Intro)</h1>
+            <p>As your programs grow larger, it's beneficial to organize your code into manageable pieces. Python's modules and packages help achieve this by promoting code reusability and organization.</p>
+
+            <h3>What is a Module?</h3>
+            <p>A module is simply a Python file (with a <code>.py</code> extension) containing Python definitions and statements (functions, classes, variables). Modules allow you to logically organize your Python code. Grouping related code into a module makes the code easier to understand, use, and maintain.</p>
+            <p>For example, if you have a set of mathematical functions, you could put them in a file named `mymath.py`. This file `mymath.py` is a module.</p>
+
+            <h3>Importing Modules</h3>
+            <p>To use the definitions from a module in another Python script or in the interactive interpreter, you need to `import` it.</p>
+
+            <h4>1. <code>import module_name</code></h4>
+            <p>This imports the entire module. To access its definitions, you need to use dot notation: `module_name.definition_name`.</p>
+            <pre>
+<code class="code-comment"># Assume we have a module named 'math_operations.py':</code>
+<code class="code-comment"># def add(x, y): return x + y</code>
+<code class="code-comment"># PI = 3.14159</code>
+
+<code class="code-keyword">import</code> math_operations <code class="code-comment"># If math_operations.py is in the same directory or Python path</code>
+
+result <code class="code-operator">=</code> math_operations.<code class="code-function">add</code>(<code class="code-number">5</code>, <code class="code-number">3</code>)
+<code class="code-function">print</code>(<code class="code-string">f"Sum: {result}"</code>)
+<code class="code-function">print</code>(<code class="code-string">f"PI: {math_operations.PI}"</code>)
+            </pre>
+
+            <h4>2. <code>from module_name import definition1, definition2</code></h4>
+            <p>This imports specific definitions (functions, variables, classes) directly into the current namespace. You can then use them without the module prefix.</p>
+            <pre>
+<code class="code-keyword">from</code> math_operations <code class="code-keyword">import</code> add, PI
+
+result <code class="code-operator">=</code> <code class="code-function">add</code>(<code class="code-number">10</code>, <code class="code-number">7</code>) <code class="code-comment"># No module_name prefix needed</code>
+<code class="code-function">print</code>(<code class="code-string">f"Sum: {result}"</code>)
+<code class="code-function">print</code>(<code class="code-string">f"PI: {PI}"</code>)
+            </pre>
+
+            <h4>3. <code>from module_name import *</code> (Wildcard Import)</h4>
+            <p>This imports all names from the module into the current namespace. **Generally discouraged** because it can lead to name collisions and makes it unclear where a definition comes from, reducing code readability.</p>
+            <pre>
+<code class="code-comment"># from math_operations import * # Avoid if possible</code>
+<code class="code-comment"># result = add(1, 2)</code>
+            </pre>
+
+            <h4>4. Importing with an Alias (<code>as</code>)</h4>
+            <p>You can give an imported module or definition an alias (a different name) in your current script. This is useful for brevity or to avoid name conflicts.</p>
+            <pre>
+<code class="code-keyword">import</code> math_operations <code class="code-keyword">as</code> mo
+<code class="code-keyword">from</code> math_operations <code class="code-keyword">import</code> add <code class="code-keyword">as</code> custom_add
+
+sum1 <code class="code-operator">=</code> mo.<code class="code-function">add</code>(<code class="code-number">2</code>, <code class="code-number">2</code>)
+sum2 <code class="code-operator">=</code> <code class="code-function">custom_add</code>(<code class="code-number">3</code>, <code class="code-number">3</code>)
+<code class="code-function">print</code>(<code class="code-string">f"Sum1: {sum1}, Sum2: {sum2}"</code>)
+            </pre>
+
+            <h3>The Python Standard Library</h3>
+            <p>Python comes with a vast standard library, which is a collection of modules providing a wide range of functionalities. You don't need to install these separately; they are part of your Python installation.</p>
+            
+            <h4>Example: <code>math</code> module</h4>
+            <p>Provides mathematical functions.</p>
+            <pre>
+<code class="code-keyword">import</code> math
+
+<code class="code-function">print</code>(<code class="code-string">f"Square root of 16: {math.<code class="code-function">sqrt</code>(<code class="code-number">16</code>)}"</code>) <code class="code-comment"># Output: 4.0</code>
+<code class="code-function">print</code>(<code class="code-string">f"Value of pi: {math.pi}"</code>)
+<code class="code-function">print</code>(<code class="code-string">f"Ceiling of 2.3: {math.<code class="code-function">ceil</code>(<code class="code-number">2.3</code>)}"</code>)   <code class="code-comment"># Output: 3</code>
+<code class="code-function">print</code>(<code class="code-string">f"Floor of 2.7: {math.<code class="code-function">floor</code>(<code class="code-number">2.7</code>)}"</code>)    <code class="code-comment"># Output: 2</code>
+            </pre>
+
+            <h4>Example: <code>random</code> module</h4>
+            <p>Provides functions for generating random numbers.</p>
+            <pre>
+<code class="code-keyword">import</code> random
+
+random_int <code class="code-operator">=</code> random.<code class="code-function">randint</code>(<code class="code-number">1</code>, <code class="code-number">10</code>) <code class="code-comment"># Random integer between 1 and 10 (inclusive)</code>
+<code class="code-function">print</code>(<code class="code-string">f"Random integer: {random_int}"</code>)
+
+random_float <code class="code-operator">=</code> random.<code class="code-function">random</code>() <code class="code-comment"># Random float between 0.0 (inclusive) and 1.0 (exclusive)</code>
+<code class="code-function">print</code>(<code class="code-string">f"Random float: {random_float}"</code>)
+
+my_list <code class="code-operator">=</code> [<code class="code-string">'apple'</code>, <code class="code-string">'banana'</code>, <code class="code-string">'cherry'</code>]
+random_choice <code class="code-operator">=</code> random.<code class="code-function">choice</code>(my_list)
+<code class="code-function">print</code>(<code class="code-string">f"Random choice from list: {random_choice}"</code>)
+            </pre>
+            <p>Other useful standard library modules include <code>datetime</code> (for dates and times), <code>os</code> (for interacting with the operating system), <code>sys</code> (for system-specific parameters and functions), <code>json</code> (for working with JSON data), and many more.</p>
+
+            <h3>What are Packages?</h3>
+            <p>Packages are a way of structuring Python's module namespace by using "dotted module names". A package is essentially a directory containing other modules and an `__init__.py` file (which can be empty). The `__init__.py` file tells Python that the directory should be treated as a package.</p>
+            <p>For example, you could have a package structure like this:</p>
+            <pre>
+mypackage/
+    __init__.py
+    module1.py
+    module2.py
+    subpackage/
+        __init__.py
+        submodule1.py
+            </pre>
+            <p>You could then import them like:</p>
+            <pre>
+<code class="code-keyword">import</code> mypackage.module1
+<code class="code-keyword">from</code> mypackage.subpackage <code class="code-keyword">import</code> submodule1
+            </pre>
+            <p>Packages help organize large projects with many modules.</p>
+
+            <h3>Third-Party Packages and <code>pip</code></h3>
+            <p>Beyond the standard library, there's a vast ecosystem of third-party packages created by the Python community, available on the Python Package Index (PyPI). You can install these packages using a tool called <code>pip</code>, which comes with most Python installations.</p>
+            <p>For example, to install a popular package like `requests` (for making HTTP requests):</p>
+            <pre><code class="code-comment"># In your terminal or command prompt:</code>
+pip install requests</pre>
+            <p>Once installed, you can import and use it in your Python scripts just like standard library modules.</p>
+            <pre>
+<code class="code-keyword">import</code> requests
+
+response <code class="code-operator">=</code> requests.<code class="code-function">get</code>(<code class="code-string">'https://api.github.com'</code>)
+<code class="code-function">print</code>(<code class="code-string">f"GitHub API status: {response.status_code}"</code>)
+            </pre>
+            <p>This is just a brief introduction. Exploring modules and packages is a key part of becoming a proficient Python developer.</p>
+
+            <div class="button-nav-group">
+                <button onclick="navigateTo('#exceptions')" class="button prev">&larr; Prev: Exceptions</button>
+                <button onclick="navigateTo('#home')" class="button next">Back to Home &rarr;</button>
+            </div>
+        </div>
+
+    </div> <!-- End of .container -->
+
+    <footer>
+        <p>&copy; 2025 CodeX. For educational purposes only.</p>
+        <p>Learn Python, build amazing things! Happy Coding!</p>
+    </footer>
+
+    <script>
+        const headerNavLinks = document.querySelectorAll('header nav .nav-link');
+        const tutorialListLinks = document.querySelectorAll('.tutorial-list .nav-link-list');
+        const allNavLinks = [...headerNavLinks, ...tutorialListLinks]; // Combine NodeLists for easier iteration if needed for active states
+        const pageContents = document.querySelectorAll('.page-content');
+        const menuToggle = document.querySelector('.menu-toggle');
+        const mainNav = document.querySelector('header nav');
+
+        function updateHeaderHeightVar() {
+            const header = document.querySelector('header');
+            if (header) {
+                document.documentElement.style.setProperty('--header-height', `${header.offsetHeight}px`);
+            }
+        }
+
+        function navigateTo(pageIdFull) {
+            const pageId = pageIdFull.startsWith('#') ? pageIdFull : '#' + pageIdFull;
+            
+            if (window.location.hash !== pageId) {
+                // Using history.pushState to prevent immediate scroll if browser default behavior is different
+                // and to have cleaner control. window.location.hash = pageId also works and triggers popstate.
+                history.pushState(null, '', pageId); 
+            }
+
+            // Hide all page contents and remove active class
+            pageContents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Show the target page content
+            const targetPage = document.querySelector(pageId);
+            if (targetPage) {
+                targetPage.classList.add('active');
+                // Scrolling is handled by html.scroll-padding-top and html.scroll-behavior for hash changes
+                // For direct JS navigation, ensure it's in view (browser should handle smooth scroll with CSS)
+                // targetPage.scrollIntoView({ block: 'start' }); // browser default is 'auto'
+            } else {
+                // Default to home if page not found
+                const homePage = document.querySelector('#home');
+                if (homePage) {
+                    homePage.classList.add('active');
+                    // homePage.scrollIntoView({ block: 'start' });
+                     if (window.location.hash !== '#home') history.pushState(null, '', '#home');
+                }
+            }
+
+            // Update active state for ALL nav links (header and tutorial list)
+            // This needs refinement as tutorial list links should not affect header active state directly and vice versa
+            // For now, let's focus on header nav links for the 'active' class in the header
+            headerNavLinks.forEach(link => {
+                link.classList.remove('active');
+                const linkHref = link.getAttribute('href').startsWith('#') ? link.getAttribute('href') : '#' + link.getAttribute('href');
+                if (linkHref === pageId) {
+                    link.classList.add('active');
+                }
+            });
+
+            // If mobile menu is open, close it after navigation
+            if (mainNav.classList.contains('active')) {
+                mainNav.classList.remove('active');
+                menuToggle.classList.remove('active');
+                menuToggle.setAttribute('aria-expanded', 'false');
+            }
+        }
+        
+        // Function to handle actual page display based on hash (called by popstate and initial load)
+        function handleHashChange() {
+            const currentHash = window.location.hash || '#home';
+            
+            pageContents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            const targetPage = document.querySelector(currentHash);
+            if (targetPage) {
+                targetPage.classList.add('active');
+            } else {
+                document.querySelector('#home').classList.add('active'); // Fallback
+            }
+
+            headerNavLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === currentHash) {
+                    link.classList.add('active');
+                }
+            });
+             // If mobile menu is open, close it
+            if (mainNav.classList.contains('active')) {
+                mainNav.classList.remove('active');
+                menuToggle.classList.remove('active');
+                menuToggle.setAttribute('aria-expanded', 'false');
+            }
+        }
+
+
+        // Handle navigation clicks (for header nav, tutorial list on home, and prev/next buttons)
+        document.querySelectorAll('a.nav-link, .tutorial-list a, .button.prev, .button.next').forEach(link => {
+            link.addEventListener('click', function(event) {
+                let targetHash;
+                if (this.classList.contains('button')) { // For prev/next buttons
+                    // Extract hash from onclick attribute (e.g., "navigateTo('#home')")
+                    const onclickAttr = this.getAttribute('onclick');
+                    const match = onclickAttr.match(/'(#?[^']+)'/);
+                    if (match && match[1]) {
+                        targetHash = match[1].startsWith('#') ? match[1] : '#' + match[1];
+                    } else {
+                        return; // Could not determine target
+                    }
+                } else { // For regular nav links
+                    targetHash = this.getAttribute('href');
+                }
+                
+                event.preventDefault(); 
+                
+                if (window.location.hash !== targetHash) {
+                    history.pushState(null, '', targetHash); // Change hash, triggers popstate
+                    handleHashChange(); // Also manually call for immediate effect and animation trigger
+                } else {
+                    // If hash is already the same, ensure content is visible and scroll (e.g. for anchor clicks on same page)
+                    handleHashChange(); // Re-apply active classes and trigger scroll if needed
+                    const targetElement = document.querySelector(targetHash);
+                    if(targetElement) targetElement.scrollIntoView({block: 'start'}); // Ensure it scrolls to top
+                }
+            });
+        });
+        
+
+        // Hamburger menu toggle
+        if (menuToggle && mainNav) {
+            menuToggle.addEventListener('click', () => {
+                mainNav.classList.toggle('active');
+                menuToggle.classList.toggle('active');
+                const isExpanded = mainNav.classList.contains('active');
+                menuToggle.setAttribute('aria-expanded', isExpanded);
+            });
+        }
+
+        // Handle initial page load based on URL hash
+        document.addEventListener('DOMContentLoaded', () => {
+            updateHeaderHeightVar(); // Set initial header height for scroll-padding
+            handleHashChange(); // Display correct page based on initial hash
+        });
+
+        // Handle browser back/forward button navigation
+        window.addEventListener('popstate', () => {
+            handleHashChange();
+        });
+
+        // Update header height on resize for scroll-padding accuracy
+        window.addEventListener('resize', updateHeaderHeightVar);
+
+    </script>
+
+</body>
+</html>
